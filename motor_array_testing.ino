@@ -14,6 +14,11 @@ const int directions[NUM_SERVOS] = {1, -1, 1, -1, 1, -1};  // -1 for -, 1 for +
 String inputString = "";
 boolean stringComplete = false;
 
+// Map serve input angle to a ticks value
+int mapServoValue(int input) {
+    return map(input, 0, 180, 0, 450);
+}
+
 void setup() {
   Serial.begin(9600);
   pwm.begin();
@@ -62,7 +67,7 @@ void loop() {
     if(valueIndex == NUM_SERVOS) {
       // Move each servo according to its home position and direction
       for(int i = 0; i < NUM_SERVOS; i++) {
-        int targetPosition = homePositions[i] + (directions[i] * values[i]);
+        int targetPosition = homePositions[i] + (directions[i] * mapServoValue(values[i]));
         
         // Constrain the target position
         targetPosition = constrain(targetPosition, SERVOMIN, SERVOMAX);
