@@ -1,4 +1,4 @@
-from src.stewart_controller import Stewart_Platform
+from yeokc.stewart_controller import Stewart_Platform
 import numpy as np
 import matplotlib.pyplot as plt
 
