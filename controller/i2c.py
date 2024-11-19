@@ -12,7 +12,7 @@ class I2C:
 
     # Max/min angles to send to motors
     self._min_angle = 0
-    self._max_angle = 120
+    self._max_angle = 90
 
   def send_data(self, data: List[int]) -> bool:
     """
