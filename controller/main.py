@@ -1,7 +1,8 @@
 # from camera import Camera
 # from pid import PIDController
 from i2c import I2C
-# from ik import IK
+import numpy as np
+from ik import IK
 
 HERTZ = 60
 
@@ -17,5 +18,7 @@ if __name__ == "__main__":
   # I2C interface
 
   # while True:
+  stewart_platform_ik = IK(105.83, 99.92, 47.5, 190, np.radians(15), 0.146, 0)
+  servo_angles = stewart_platform_ik.compute(np.array[[0, 0, 0]])
   i2c_interface = I2C()
-  i2c_interface.send_data([5, 5, 5, 5, 5, 5])
+  i2c_interface.send_data(servo_angles)
