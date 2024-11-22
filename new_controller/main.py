@@ -28,9 +28,9 @@ if __name__ == "__main__":
 
   camera = Camera(camera_index=0)
   pid_controller_x = PIDController(1, 0, 0, 1/HERTZ)
-  pid_controller_y = PIDController(0.5, 0, 0, 1/HERTZ)
+  pid_controller_y = PIDController(1, 0, 0, 1/HERTZ)
 
-  bus = MotorSerial('COM5')
+  bus = MotorSerial('/dev/tty.usbmodem21301')
 
   running = True
 
@@ -55,8 +55,9 @@ if __name__ == "__main__":
       stewart_platform_ik = IK(105.83, 99.92, 47.5, 190, np.radians(15), 0.146, 0)
       servo_angles = stewart_platform_ik.compute(np.array([x_tilt, y_tilt, 0]))
       bus.send([int(x) for x in servo_angles.tolist()])
-      sleep(1)
+
+      sleep(0.05)
     else:
       print("Camera can't see anything")
 
-    # running = False
+    running = True

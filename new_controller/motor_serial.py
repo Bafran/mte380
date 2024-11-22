@@ -18,16 +18,17 @@ class MotorSerial:
 
     try:
       # Calculate checksum
-      checksum = self._calculate_checksum(angles)
+      # checksum = self._calculate_checksum(angles)
       
       # Construct full packet
-      packet = bytes([0xFF] + angles + [checksum])
+      packet = [0xFF] + angles
       
       # Send the packet
       self._ser.write(packet)
+
+      print(f"packet: {packet}")
       
       # Wait 50ms
-      time.sleep(0.05)
 
     except:
       print("Serial connection failed")

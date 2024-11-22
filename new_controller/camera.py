@@ -7,16 +7,16 @@ THETA_RAD = np.radians(30)
 class Camera:
     def __init__(self, camera_index=0):
         # Initialize the webcam
-        self.cap = cv2.VideoCapture("/dev/video0", cv2.CAP_V4L2)
-        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+        self.cap = cv2.VideoCapture(0)
+        #self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         self.cap.set(cv2.CAP_PROP_FPS, 10)
 
         if not self.cap.isOpened():
             raise Exception("Error: Camera not accessible")
 
         # Define the ArUco dictionary and detector parameters
-        self.aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
-        self.parameters = cv2.aruco.DetectorParameters_create()
+        self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        self.parameters = cv2.aruco.DetectorParameters()
         
         # Define the HSV range for the orange ball
         self.lower_orange = np.array([5, 150, 150])
