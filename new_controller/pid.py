@@ -1,8 +1,9 @@
 import collections
+import math
 
 
 class PIDController:
-  def __init__(self, kp, ki, kd, dt, integral_window=0.5):
+  def __init__(self, kp, ki, kd, dt, dead_zone=5, integral_window=2):
     self.kp = kp
     self.ki = ki
     self.kd = kd
@@ -11,8 +12,16 @@ class PIDController:
     self.error_window = collections.deque(maxlen=self.integral_window)
     self.prev_error = 0
     self.prev_derivative = 0
+    self.dead_zone = dead_zone
 
   def compute(self, error):
+
+    # error = math.pow(error, 1.1)
+
+    if abs(error) < self.dead_zone:
+      error = 0
+
+    print('Error', error)
     P = self.kp * error
     
     self.error_window.append(error)
@@ -24,5 +33,6 @@ class PIDController:
     self.prev_error = error
     self.prev_derivative = derivative
     
+    print(f"P:{P} I:{I} D:{D}")
     return P + I + D
   

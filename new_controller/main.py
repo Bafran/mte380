@@ -27,10 +27,10 @@ if __name__ == "__main__":
   # while True:
 
   camera = Camera(camera_index=0)
-  pid_controller_x = PIDController(1, 0, 0, 1/HERTZ)
-  pid_controller_y = PIDController(1, 0, 0, 1/HERTZ)
+  pid_controller_x = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
+  pid_controller_y = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
 
-  bus = MotorSerial('/dev/tty.usbmodem21301')
+  bus = MotorSerial('/dev/tty.usbmodem11201')
 
   running = True
 
@@ -45,18 +45,29 @@ if __name__ == "__main__":
       normalized_x_error = x_error_mm / MAX_MM
       normalized_y_error = y_error_mm / MAX_MM
 
-      # Scaling angle
-      x_tilt = (normalized_x_error * MAX_TILT_ANGLE)
-      y_tilt = (normalized_y_error * MAX_TILT_ANGLE)
 
-      print(f"X tilt: {x_tilt}")
-      print(f"Y tilt: {y_tilt}")
+      # Scaling angle
+      roll = max(-15, min((normalized_x_error * MAX_TILT_ANGLE), 20))
+      pitch = max(-15, min(-(normalized_y_error * MAX_TILT_ANGLE),20))
+
+
+      print(f"Pitch: {pitch}")
+      print(f"Roll: {roll}")
 
       stewart_platform_ik = IK(105.83, 99.92, 47.5, 190, np.radians(15), 0.146, 0)
-      servo_angles = stewart_platform_ik.compute(np.array([x_tilt, y_tilt, 0]))
-      bus.send([int(x) for x in servo_angles.tolist()])
+      servo_angles = stewart_platform_ik.compute(np.array([pitch, roll, 0]))
+
+      bus_angles = []
+      for angle in servo_angles.tolist():
+        if angle > 70:
+          angle = 70
+        bus_angles.append(int(angle))
+
+      print(bus_angles)
+      bus.send(bus_angles)
 
       sleep(0.05)
+      # stewart_platform_ik.plot()
     else:
       print("Camera can't see anything")
 

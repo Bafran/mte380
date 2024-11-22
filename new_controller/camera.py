@@ -63,7 +63,7 @@ class Camera:
                 # Get the bounding box of the platform
                 x_min, y_min = np.min(image_points, axis=0).astype(int) - 25
                 x_max, y_max = np.max(image_points, axis=0).astype(int) + 25
-
+ 
                 # Crop to the platform region
                 cropped = frame[y_min:y_max, x_min:x_max]
 
@@ -88,7 +88,7 @@ class Camera:
                         orange_pixels = cv2.countNonZero(mask_orange)
                         total_pixels = roi.shape[0] * roi.shape[1]
 
-                        if orange_pixels / total_pixels > 0.15:  # Ball detected
+                        if orange_pixels / total_pixels > 0.2:  # Ball detected
                             print("Detected the ball")
                             ball_pixel = np.array([[x + x_min, y + y_min]], dtype="float32")
                             ball_mm = cv2.perspectiveTransform(np.array([ball_pixel]), homography_matrix)[0][0]
