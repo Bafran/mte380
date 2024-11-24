@@ -6,6 +6,7 @@ from motor_serial import MotorSerial
 
 import numpy as np
 from time import sleep
+import math
 
 HERTZ = 60
 
@@ -27,9 +28,11 @@ if __name__ == "__main__":
   # while True:
 
   camera = Camera(camera_index=0)
-  pid_controller_x = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
-  pid_controller_y = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
-
+  # pid_controller_x = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
+  # pid_controller_y = PIDController(0.2, 0.01, 0.08, 0.05, dead_zone=10)
+  pid_controller_x = PIDController(0.1, 0.00015, 0.05, 0.05, dead_zone=5, edge_threshold=60)
+  pid_controller_y = PIDController(0.1, 0.00015, 0.05, 0.05, dead_zone=5, edge_threshold=60)
+  # 0.1, 0.00015, 0.05, 0.05 (integral window of 2)
   bus = MotorSerial('/dev/tty.usbmodem11201')
 
   running = True
@@ -46,6 +49,9 @@ if __name__ == "__main__":
       normalized_y_error = y_error_mm / MAX_MM
 
 
+      # roll = (normalized_x_error * MAX_TILT_ANGLE)
+      # pitch = (normalized_y_error * MAX_TILT_ANGLE)
+                             
       # Scaling angle
       roll = max(-15, min((normalized_x_error * MAX_TILT_ANGLE), 20))
       pitch = max(-15, min(-(normalized_y_error * MAX_TILT_ANGLE),20))
@@ -59,8 +65,13 @@ if __name__ == "__main__":
 
       bus_angles = []
       for angle in servo_angles.tolist():
+        # Make motor tilt more extreme 
         if angle > 70:
+          print('***** EXCEPTION ******')
           angle = 70
+        elif angle < -15:
+          angle = -15
+
         bus_angles.append(int(angle))
 
       print(bus_angles)

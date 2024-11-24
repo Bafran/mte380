@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Angle of rotation (CCW) between coordinate frames
-THETA_RAD = np.radians(30)
+THETA_RAD = np.radians(150)
 
 class Camera:
     def __init__(self, camera_index=0):
@@ -98,7 +98,7 @@ class Camera:
                                 [np.cos(THETA_RAD), -np.sin(THETA_RAD)],
                                 [np.sin(THETA_RAD), np.cos(THETA_RAD)]
                             ])
-                            ball_robot = np.dot(rotation_matrix, [ball_mm[0], ball_mm[1]])
+                            ball_robot = np.dot(rotation_matrix, [ball_mm[0] - 30, ball_mm[1]- 30])
 
                             return ball_robot[0], ball_robot[1]
 

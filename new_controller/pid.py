@@ -1,9 +1,10 @@
 import collections
 import math
+import numpy as np
 
 
 class PIDController:
-  def __init__(self, kp, ki, kd, dt, dead_zone=5, integral_window=2):
+  def __init__(self, kp, ki, kd, dt, dead_zone=5, edge_threshold=70, integral_window=2):
     self.kp = kp
     self.ki = ki
     self.kd = kd
@@ -13,22 +14,24 @@ class PIDController:
     self.prev_error = 0
     self.prev_derivative = 0
     self.dead_zone = dead_zone
+    self.edge_threshold = edge_threshold
 
   def compute(self, error):
-
-    # error = math.pow(error, 1.1)
-
+    gain = 1
+    # Ramp up P response near the edges
+    if abs(error) > self.edge_threshold:
+      gain = 1.2
+    # P response in the dead zone
     if abs(error) < self.dead_zone:
       error = 0
 
-    print('Error', error)
-    P = self.kp * error
+    P = self.kp * error * gain
     
     self.error_window.append(error)
     I = self.ki * (self.dt * sum(self.error_window))
     
     derivative = (error - self.prev_error) / self.dt
-    D = self.kd * (0.8 * derivative + 0.2 * self.prev_derivative)
+    D = self.kd * (0.5 * derivative + 0.5 * self.prev_derivative) * gain
     
     self.prev_error = error
     self.prev_derivative = derivative
