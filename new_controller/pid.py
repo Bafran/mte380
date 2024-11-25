@@ -16,7 +16,11 @@ class PIDController:
     self.dead_zone = dead_zone
     self.edge_threshold = edge_threshold
 
-  def compute(self, error):
+  def compute(self, error, target=0):
+    # Error is input as error from the origin
+    # Subtract target to get error from target
+    error -= target
+
     gain = 1
     # Ramp up P response near the edges
     if abs(error) > self.edge_threshold:
