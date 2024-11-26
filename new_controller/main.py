@@ -20,8 +20,8 @@ MAX_TILT_ANGLE = 20
 if __name__ == "__main__":
   # Initializations
   camera = Camera(camera_index=0)
-  pid_controller_x = PIDController(0.105, 0.0005, 0.054, 0.05, dead_zone=10, edge_threshold=60)
-  pid_controller_y = PIDController(0.105, 0.0005, 0.054, 0.05, dead_zone=10, edge_threshold=60)
+  pid_controller_x = PIDController(0.105, 0.001, 0.054, 0.05, dead_zone=0, edge_threshold=60)
+  pid_controller_y = PIDController(0.105, 0.001, 0.054, 0.05, dead_zone=0, edge_threshold=60)
   stewart_platform_ik = IK(105.83, 99.92, 47.5, 190, np.radians(15), 0.146, 0)
   bus = MotorSerial('/dev/tty.usbmodem21301')
 
