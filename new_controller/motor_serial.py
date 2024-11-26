@@ -26,7 +26,7 @@ class MotorSerial:
       # Send the packet
       self._ser.write(packet)
 
-      print(f"packet: {[p-100 for p in packet]}")
+      # print(f"packet: {[p-100 for p in packet]}")
       
     except:
       print("Serial connection failed")

@@ -11,6 +11,7 @@ class PIDController:
     self.dt = dt
     self.integral_window = int(integral_window / dt)
     self.error_window = collections.deque(maxlen=self.integral_window)
+    self.error_aggregate = 0
     self.prev_error = 0
     self.prev_derivative = 0
     self.dead_zone = dead_zone
@@ -20,6 +21,7 @@ class PIDController:
     # Error is input as error from the origin
     # Subtract target to get error from target
     error -= target
+    print(f"Error: {error}")
 
     gain = 1
     # Ramp up P response near the edges
@@ -31,8 +33,9 @@ class PIDController:
 
     P = self.kp * error * gain
     
-    self.error_window.append(error)
-    I = self.ki * (self.dt * sum(self.error_window))
+    # self.error_window.append(error)
+    self.error_aggregate += error
+    I = self.ki * self.error_aggregate
     
     derivative = (error - self.prev_error) / self.dt
     D = self.kd * (0.5 * derivative + 0.5 * self.prev_derivative) * gain
